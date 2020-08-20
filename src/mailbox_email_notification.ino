@@ -1,22 +1,25 @@
 /*
+  https://lajtronix.eu/2019/07/28/simple-esp8266-e-mail-sensor-switch/
 	https://gist.github.com/LajtEU/8e3c82d1cb4c680d949c65e01f655b52#file-esp-12f_mailbox_e-mail_notification_sensor-ino
 
 */
 
 
-int holdPin = 4; // defines GPIO 4 as the hold pin (will hold ESP-12F enable pin high untill we power down)
+int holdPin = 4; // defines GPIO 4 as the hold pin (will hold ESP-12F enable 
+                 // pin high until we power down)
 
 #include <ESP8266WiFi.h>
-const char* ssid = "Wifi_name"; // Enter the SSID of your WiFi Network.
-const char* password = "Wifi_pass";// Enter the Password of your WiFi Network.
+const char* ssid = "Wifi_name";     // Enter the SSID of your WiFi Network.
+const char* password = "Wifi_pass"; // Enter the Password of your WiFi Network.
 char server[] = "mail.smtp2go.com"; // The SMTP Server 
 
 WiFiClient espClient;
 
 void setup()
 {
-  pinMode(holdPin, OUTPUT);     // sets GPIO 4 to output
-  digitalWrite(holdPin, HIGH);  // sets GPIO 4 to high (this holds EN pin high when the button is relesed).
+  pinMode(holdPin, OUTPUT);         // sets GPIO 4 to output
+  digitalWrite(holdPin, HIGH);      // sets GPIO 4 to high (this holds EN pin 
+                                    // high when the button is released).
   
   Serial.begin(115200);
   delay(10);
@@ -74,9 +77,10 @@ byte sendEmail()
   //  
   Serial.println(F("Sending User"));
   // Change this to your base64, ASCII encoded username
-  /*
-  For example, the email address test@gmail.com would be encoded as dGVzdEBnbWFpbC5jb20=
-  */
+  //
+  // For example, the email address test@gmail.com would 
+  // be encoded as dGVzdEBnbWFpbC5jb20=
+  //
   espClient.println("dXNlcg=="); //base64, ASCII encoded Username
   if (!emailResp()) 
     return 0;
@@ -125,11 +129,17 @@ byte sendEmail()
   //
   espClient.stop();
   Serial.println(F("disconnected"));
-  delay(30000);                                 // wait for 30 sec before powering down to negate spam (opening and closing mailbox cover)
-  digitalWrite(holdPin, LOW);                   // set GPIO 4 low this takes EN pin down & powers down the ESP.
-  delay(5000);                                  // in case that mailbox cover is left open, wait for another 5 sec
-  ESP.deepSleep(0,WAKE_RF_DEFAULT);             // going to deep sleep indefinitely until switch is depressed
-  delay(100);                                   // sometimes deepsleep command bugs so small delay is needed
+  delay(30000);                     // wait for 30 sec before powering 
+                                    // down to negate spam (opening and 
+                                    // closing mailbox cover)
+  digitalWrite(holdPin, LOW);       // set GPIO 4 low this takes EN pin 
+                                    // down & powers down the ESP.
+  delay(5000);                      // in case that mailbox cover is left 
+                                    // open, wait for another 5 sec
+  ESP.deepSleep(0,WAKE_RF_DEFAULT); // going to deep sleep indefinitely 
+                                    // until switch is depressed
+  delay(100);                       // sometimes deepsleep command bugs so 
+                                    // small delay is needed
   return 1;
 }
 
@@ -162,7 +172,8 @@ byte emailResp()
   if (responseCode >= '4')
   {
     //  efail();
-    digitalWrite(holdPin, LOW);      // set GPIO 4 low this takes EN down & powers down the ESP.
+    digitalWrite(holdPin, LOW);     // set GPIO 4 low this takes EN down & powers 
+                                    // down the ESP.
     return 0;
   }
   return 1;
