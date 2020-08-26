@@ -71,6 +71,8 @@
     "data": [0x48,bytes for string],
   }
 
+VSCP is a framework for IoT/m2m hardware that can communicate over many different mediums and protocols. This library can be used to communicate with a VSCP remote host in an easy and intutive way. The library supports all Arduino Ethernet Client compatible hardware.
+
 */
 
 #define DEBUG // Enable debug output on serial channel
