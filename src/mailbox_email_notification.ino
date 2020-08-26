@@ -88,6 +88,8 @@ int holdPin = 4; // defines GPIO 4 as the hold pin (will hold ESP-12F enable
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 
+#include <vscptcpclient.h>
+
 // MQTT
 #include <PubSubClient.h>
 
@@ -99,9 +101,9 @@ static const char VSCP_ETH_PREFIX[] PROGMEM = "FF:FF:FF:FF:FF:FF:FF:FE:";
 
 char vscp_guid[50];
 
-const char *ssid = "grodansparadis"; // Enter the SSID of your WiFi Network.
+const char *ssid = ""; // Enter the SSID of your WiFi Network.
 const char *password =
-    "brattbergavagen17!"; // Enter the Password of your WiFi Network.
+    ""; // Enter the Password of your WiFi Network.
 
 // MQTT connection credentials
 const char *mqtt_server = "192.168.1.7";
