@@ -109,7 +109,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=40304",
+                "PLATFORMIO=50000",
                 "ESP8266",
                 "ARDUINO_ARCH_ESP8266",
                 "ARDUINO_ESP8266_ESP12",

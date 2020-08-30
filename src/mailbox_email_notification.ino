@@ -103,14 +103,14 @@ char vscp_guid[50];
 
 const char *ssid = ""; // Enter the SSID of your WiFi Network.
 const char *password =
-    ""; // Enter the Password of your WiFi Network.
+    "!"; // Enter the Password of your WiFi Network.
 
 // MQTT connection credentials
 const char *mqtt_server = "192.168.1.7";
 const int16_t mqtt_port = 1883;
 const char *mqtt_user = "vscp";
 const char *mqtt_password = "secret";
-const char *mqtt_topic = "vscp"; // vscp/guid/class/type
+char mqtt_topic[80];  // vscp/guid/class/type
 
 // VSCP connection credentials
 const char *vscp_server = "192.168.1.7";
@@ -125,12 +125,10 @@ WiFiClient espClient;
 void dumpVscpEvent(vscpEventEx *pex);
 void callback(vscpEventEx *pex);
 
-
-
 vscpTcpClient vscp(vscp_server, vscp_port, callback, espClient);
 
 // GPIO where the DS18B20 is connected to
-const int oneWireBus = 5;
+const int oneWireBus = 5; // (D1 on NodeMCU)
 
 // Setup a oneWire instance to communicate with any OneWire devices
 OneWire oneWire(oneWireBus);
@@ -156,6 +154,11 @@ void setup() {
   strcpy(vscp_guid,"FF:FF:FF:FF:FF:FF:FF:FE:");
   strcat(vscp_guid,WiFi.macAddress().c_str());
   strcat(vscp_guid,":00:00");
+
+  // Construct MQTT topic template
+  strcat(mqtt_topic,"vscp/");
+  strcat(mqtt_topic,vscp_guid);
+  strcat(mqtt_topic,"/%d/%d");  // class, type
 
   Serial.begin(115200);
   //gdbstub_init();     // Uncomment for debug
@@ -513,10 +516,8 @@ bool sendMQTT(byte count, String *events) {
       for (int i = 0; i < count; i++) {
 
         // effective topic is "configured-topic/guid/class/type"
-        String topic = mqtt_topic;
-        topic += "/";
-        topic += vscp_guid;
-        topic += "/";
+        char topic[100];
+        sprintf(topic,mqtt_topic,class,type);
 
         if (!mqttClient.publish("vscp", events[i].c_str())) {
           Serial.println("Failed to publish MQTT message. - ");
