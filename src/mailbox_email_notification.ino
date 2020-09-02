@@ -7,8 +7,6 @@
   The hardware is put to deep sleep again when the lid of the mailbox is closed to 
   save on battery. 
 
-  
-
   Inspiration fetched from
   https://lajtronix.eu/2019/07/28/simple-esp8266-e-mail-sensor-switch/
   https://gist.github.com/LajtEU/8e3c82d1cb4c680d949c65e01f655b52#file-esp-12f_mailbox_e-mail_notification_sensor-ino
@@ -32,7 +30,7 @@
 
   https://www.vscp.org
 
-  Copyright (c) Ake Hedman, Grodans Paradis AB, akhe@grodansparadis.com, MIT License
+  Copyright (c) Åke Hedman, Grodans Paradis AB, akhe@grodansparadis.com, MIT License
 
 */
 
@@ -55,7 +53,11 @@ int holdPin = 4; // defines GPIO 4 as the hold pin (will hold ESP-12F enable
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 
-#include <vscptcpclient.h>    // Must be present for event definitions
+#ifdef VSCP
+#include <vscptcpclient.h>    
+#else
+#include "vscp.h"             // For VSCP class def
+#endif
 
 // MQTT
 #ifdef MQTT
@@ -76,9 +78,9 @@ boolean sendMQTT(vscpEventEx *pex);
 static const char VSCP_ETH_PREFIX[] PROGMEM = "FF:FF:FF:FF:FF:FF:FF:FE:";
 char vscp_guid[50];
 
-const char *ssid = "grodansparadis"; // Enter the SSID of your WiFi Network.
+const char *ssid = ""; // Enter the SSID of your WiFi Network.
 const char *password =
-    "brattbergavagen17!"; // Enter the Password of your WiFi Network.
+    "!"; // Enter the Password of your WiFi Network.
 
 // MQTT connection credentials
 #ifdef MQTT
