@@ -8,6 +8,7 @@
   save on battery. 
 
   Inspiration fetched from
+  https://diyprojects.io/esp8266-deep-sleep-mode-test-wake-pir-motion-detector/#.X0_lOobRZhE
   https://lajtronix.eu/2019/07/28/simple-esp8266-e-mail-sensor-switch/
   https://gist.github.com/LajtEU/8e3c82d1cb4c680d949c65e01f655b52#file-esp-12f_mailbox_e-mail_notification_sensor-ino
 
@@ -332,12 +333,12 @@ void setup()
 
   ex.sizeData = 5;
   // Datacoding is explained here https://docs.vscp.org/spec/latest/#/./vscp_measurements
-  ex.data[0] = 0xA8; // Floating point, Sensor=0, Unit = Degrees Celsius
-  // Floating point values (as all numbers) are stored MSB first in VSCP
-  byte *p = (byte *)&tempC;  
+  ex.data[0] = 0xA8; // Floating point, Sensor=0, Unit = Degrees Celsius  
+  byte *p = (byte *)&tempC;    
+  // ESP8266 is a little endian - VSCP use big endian
   ex.data[1] = *(p + 3);  // MSB of 32-bit floating point number (Big-endian)
   ex.data[2] = *(p + 2);     
-  ex.data[3] = *(p + 3);
+  ex.data[3] = *(p + 1);
   ex.data[4] = *(p + 0);  // MSB of 32-bit floating point number (Big-endian)   
   
 #ifdef VSCP  
@@ -388,7 +389,7 @@ void setup()
   ex.data[1] = 0; // Zone
   ex.data[2] = 0; // Sub zone
   ex.data[3] = 1; // Unit = 1 = Degrees Celsius for a temperature
-  // Print the floating point value
+  // Print the floating point value on string form
   sprintf((char *)(ex.data+3),"%2.3f",tempC);  
   ex.sizeData = 4 + strlen((char *)ex.data+4) + 1; // We include the terminating zero  
 
@@ -541,13 +542,12 @@ void setup()
   Serial.println(F("disconnected"));
 #endif  
 
-  delay(30000);                       // wait for 10 sec before powering down (opening and closing mailbox cover)
-  digitalWrite(holdPin, LOW);         // set GPIO 4 low this takes EN pin down & powers down the ESP.
+  //delay(30000);                       // wait for 10 sec before powering down (opening and closing mailbox cover)
+  //digitalWrite(holdPin, LOW);           // set GPIO 4 low this takes EN pin down & powers down the ESP.
   Serial.println("Ending it all...");
-  delay(5000);                        // in case that mailbox cover is left open, wait for another 5 sec
-  ESP.deepSleep(0,WAKE_RF_DEFAULT);   // going to deep sleep indefinitely until switch is depressed
-  delay(100);                         // sometimes deepsleep command bugs so small delay is needed
-  pinMode(holdPin, INPUT);
+  //delay(5000);                        // in case that mailbox cover is left open, wait for another 5 sec
+  ESP.deepSleep(0,WAKE_RF_DEFAULT);     // going to deep sleep indefinitely until switch is depressed
+  delay(100);                           // sometimes deepsleep command bugs so small delay is needed
 }
 
 ///////////////////////////////////////////////////////////////////////////////
