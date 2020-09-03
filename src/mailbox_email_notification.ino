@@ -396,12 +396,12 @@ void setup()
 #ifdef VSCP  
   if ( VSCP_ERROR_SUCCESS == ( rv = vscp.sendEventToRemote(ex) ) ) {
 #ifdef DEBUG    
-    Serial.println("VSCP: Sent level I temperature event");  
+    Serial.println("VSCP: Sent level II temperature event");  
 #endif    
   }
   else {
 #ifdef DEBUG    
-    Serial.print("Failed to send level I temperature event, ");
+    Serial.print("Failed to send level II temperature event, ");
     Serial.print("Error=");
     Serial.println(rv);
 #endif    
