@@ -31,7 +31,7 @@
 
   https://www.vscp.org
 
-  Copyright (c) Åke Hedman, Grodans Paradis AB, akhe@grodansparadis.com, MIT License
+  Copyright (c) 2020 Åke Hedman, Grodans Paradis AB, akhe@grodansparadis.com, MIT License
 
 */
 
@@ -79,9 +79,9 @@ boolean sendMQTT(vscpEventEx *pex);
 static const char VSCP_ETH_PREFIX[] PROGMEM = "FF:FF:FF:FF:FF:FF:FF:FE:";
 char vscp_guid[50];
 
-const char *ssid = ""; // Enter the SSID of your WiFi Network.
+const char *ssid = "grodansparadis"; // Enter the SSID of your WiFi Network.
 const char *password =
-    "!"; // Enter the Password of your WiFi Network.
+    "brattbergavagen17!"; // Enter the Password of your WiFi Network.
 
 // MQTT connection credentials
 #ifdef MQTT
@@ -220,6 +220,14 @@ void setup()
 
   // Give system a chance to work.
   yield();
+
+  uint8_t ttt[16];
+  vscp.readGuidFromStr(ttt,vscp_guid);
+  for ( int i=0; i<16; i++ ) {
+    Serial.print(ttt[i]);
+    Serial.print(" ");
+  }
+  Serial.println();
 
   // Attempt to connect 
 #ifdef MQTT  
@@ -390,7 +398,7 @@ void setup()
   ex.data[2] = 0; // Sub zone
   ex.data[3] = 1; // Unit = 1 = Degrees Celsius for a temperature
   // Print the floating point value on string form
-  sprintf((char *)(ex.data+3),"%2.3f",tempC);  
+  sprintf((char *)(ex.data+4),"%2.3f",tempC);  
   ex.sizeData = 4 + strlen((char *)ex.data+4) + 1; // We include the terminating zero  
 
 #ifdef VSCP  
