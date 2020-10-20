@@ -81,7 +81,7 @@ char vscp_guid[50];
 
 const char *ssid = "grodansparadis"; // Enter the SSID of your WiFi Network.
 const char *password =
-    "brattbergavagen17!"; // Enter the Password of your WiFi Network.
+    ""; // Enter the Password of your WiFi Network.
 
 // MQTT connection credentials
 #ifdef MQTT
